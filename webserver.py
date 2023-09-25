@@ -17,10 +17,13 @@ load_dotenv()
 mapping = [
     (r"^/api/books/search", "get_api_search"),
     (r"^/api/books/suggestion", "get_book_suggestion"),
+    (r"^/api/books$", "get_books"),
     (r"^/books/(?P<book_file>.+)$", "get_book"),
     (r"^/$", "get_index"),
     (r"^/index$", "get_index"),
     (r"^/search$", "get_search"),
+    (r"^/book$", "get_book_page"),
+    (r"^/api/book/(?P<book_key>\w+)$", "get_book_by_api"),
 ]
 
 
@@ -38,17 +41,17 @@ class WebRequestHandler(BaseHTTPRequestHandler):
     def get_book_session(self):
         c = self.cookies
         if not c or not c.get("session"):
-            print("No se encontro un Cookie")
+            print("No cookie")
             c = SimpleCookie()
             c["session"] = uuid.uuid4()
         else:
-            print("Se encontro un Cookie")
+            print("Cookie found")
         return c.get("session").value
 
     def get_book_suggestion(self):
         session_id = self.get_book_session()
         r = redis.StrictRedis(
-            host="l54.159.209.57",
+            host="54.159.209.57",
             port=6379,
             db=0,
             charset="utf-8",
@@ -111,6 +114,50 @@ class WebRequestHandler(BaseHTTPRequestHandler):
         # Write headers
         self.wfile.write(book.encode("utf-8"))
 
+    def get_books(self):
+        r = redis.StrictRedis(
+            host="54.159.209.57",
+            port=6379,
+            db=0,
+            charset="utf-8",
+            decode_responses=True,
+        )
+
+        books = r.keys("book*")
+        response = []
+
+        for book in books:
+            book_content = r.get(book)
+            response.append(get_formatted_book(book_content, book))
+
+        r.connection_pool.disconnect()
+        json_data = json.dumps({"books": response})
+
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(json_data.encode("utf-8"))
+
+    def get_book_by_api(self, book_key):
+        r = redis.StrictRedis(
+            host="54.159.209.57",
+            port=6379,
+            db=0,
+            charset="utf-8",
+            decode_responses=True,
+        )
+
+        book = r.get(f"{book_key}.html")
+
+        r.connection_pool.disconnect()
+
+        response = get_formatted_book(book, f"{book_key}.html")
+
+        json_data = json.dumps(response)
+
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(json_data.encode("utf-8"))
+
     def get_by_file_name(self, file_name):
         self.send_response(200)
         self.send_header("Content-Type", "text/html")
@@ -127,6 +174,9 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 
     def get_search(self):
         self.get_by_file_name("html/search.html")
+
+    def get_book_page(self):
+        self.get_by_file_name("html/book.html")
 
     def get_api_search(self):
         try:
@@ -166,7 +216,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
                     if book_name.lower() in book_name_parser.data[0].lower():
                         if not isFound:
                             isFound = True
-                            books_found.append(get_formatted_book(book_content))
+                            books_found.append(get_formatted_book(book_content, book))
 
                 if author and author != "":
                     author_parser = CustomHTMLParser("p", "author")
@@ -174,7 +224,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
                     if author.lower() in author_parser.data[0].lower():
                         if not isFound:
                             isFound = True
-                            books_found.append(get_formatted_book(book_content))
+                            books_found.append(get_formatted_book(book_content, book))
 
                 if description and description != "":
                     description_parser = CustomHTMLParser("p", "description")
@@ -182,7 +232,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
                     if description.lower() in description_parser.data[0].lower():
                         if not isFound:
                             isFound = True
-                            books_found.append(get_formatted_book(book_content))
+                            books_found.append(get_formatted_book(book_content, book))
 
             r.connection_pool.disconnect()
             json_data = json.dumps({"books": books_found})
