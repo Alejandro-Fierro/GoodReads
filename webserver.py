@@ -51,7 +51,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
     def get_book_suggestion(self):
         session_id = self.get_book_session()
         r = redis.StrictRedis(
-            host="54.159.209.57",
+            host="localhost",
             port=6379,
             db=0,
             charset="utf-8",
@@ -89,7 +89,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
     def get_book(self, book_file):
         self.url = urlparse(self.path)
         r = redis.StrictRedis(
-            host="54.159.209.57",
+            host="localhost",
             port=6379,
             db=0,
             charset="utf-8",
@@ -116,7 +116,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 
     def get_books(self):
         r = redis.StrictRedis(
-            host="54.159.209.57",
+            host="localhost",
             port=6379,
             db=0,
             charset="utf-8",
@@ -139,7 +139,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 
     def get_book_by_api(self, book_key):
         r = redis.StrictRedis(
-            host="54.159.209.57",
+            host="localhost",
             port=6379,
             db=0,
             charset="utf-8",
@@ -195,7 +195,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
                 return
 
             r = redis.StrictRedis(
-                host="54.159.209.57",
+                host="localhost",
                 port=6379,
                 db=0,
                 charset="utf-8",
@@ -266,7 +266,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 
 
 def set_redis_data():
-    r = redis.StrictRedis(host="54.159.209.57", port=6379, db=0)
+    r = redis.StrictRedis(host="localhost", port=6379, db=0)
     directory = "html/books"
 
     for file_name in os.listdir(directory):
