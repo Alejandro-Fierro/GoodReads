@@ -1,3 +1,6 @@
+# Proyecto Programacion Web 1
+En el sisguiente vidoe se explica la funcionalidad del servidor y de la pagina web como tal:
+
 # Proyecto 1 
 
 En este primer proyecto vamos a desarrollar una applicación web sencilla
