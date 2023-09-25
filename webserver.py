@@ -243,7 +243,7 @@ def set_redis_data():
 
 if __name__ == "__main__":
     print("Server starting...")
-    server = HTTPServer(("44.218.39.200", 80), WebRequestHandler)
+    server = HTTPServer(("localhost", 80), WebRequestHandler)
 
     print("Server running...")
 
