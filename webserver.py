@@ -243,7 +243,7 @@ def set_redis_data():
 
 if __name__ == "__main__":
     print("Server starting...")
-    server = HTTPServer(("0.0.0.0", 80), WebRequestHandler)
+    server = HTTPServer(("luisfierro.ddns.net", 80), WebRequestHandler)
 
     print("Server running...")
 
