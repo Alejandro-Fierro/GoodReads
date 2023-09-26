@@ -89,7 +89,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
     def get_book(self, book_file):
         self.url = urlparse(self.path)
         r = redis.StrictRedis(
-            host=os.getenv("REDIS_HOST"),
+            host="18.233.157.204",
             port=6379,
             db=0,
             charset="utf-8",
@@ -116,7 +116,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 
     def get_books(self):
         r = redis.StrictRedis(
-            host=os.getenv("REDIS_HOST"),
+            host="18.233.157.204",
             port=6379,
             db=0,
             charset="utf-8",
@@ -195,7 +195,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
                 return
 
             r = redis.StrictRedis(
-                host=os.getenv("REDIS_HOST"),
+                host="18.233.157.204",
                 port=6379,
                 db=0,
                 charset="utf-8",
@@ -266,7 +266,7 @@ class WebRequestHandler(BaseHTTPRequestHandler):
 
 
 def set_redis_data():
-    r = redis.StrictRedis(host=os.getenv("REDIS_HOST"), port=6379, db=0)
+    r = redis.StrictRedis(host="18.233.157.204", port=6379, db=0)
     directory = "html/books"
 
     for file_name in os.listdir(directory):
