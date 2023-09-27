@@ -1,5 +1,7 @@
 # Proyecto Programacion Web 1
 En el sisguiente vidoe se explica la funcionalidad del servidor y de la pagina web como tal:
+https://www.loom.com/share/af512cc108b049b489b38137a362fd4c?sid=83761487-48e3-4a24-8075-1294d08c2cae
+esta en la plataforma Loom, debido a que permite el grabar la pantalla y a mi mismo de la misma manera y al mismo tiempo
 
 # Proyecto 1 
 
